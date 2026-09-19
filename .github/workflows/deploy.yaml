@@ -58,8 +58,13 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: ${{ env.AWS_REGION }}
+      
+      # 3. Login to ECR
+      - name: Login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
-      # 3. Build and push Docker image
+      # 4. Build and push Docker image
       - name: Build and push docker image to ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -68,13 +73,13 @@ jobs:
           docker build -t $ECR_REGISTRY/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG}} .
           docker push $ECR_REGISTRY/${{env.ECR_REPOSITORY}}:${{env.IMAGE_TAG}} .
       
-      # 4. Download current ECS task definition
+      # 5. Download current ECS task definition
       - name: Download task definition
         run: |
           aws ecs describe-task-definition --task-definition ${{ env.ECS_TASK_DEFINITION }} \
             --query taskDefinition > task-definition.json
 
-      # 5. Replace container image
+      # 6. Replace container image
       - name: Update task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
@@ -83,7 +88,7 @@ jobs:
           container-name: ${{ env.CONTAINER_NAME }}
           image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
 
-      # 6. Deploy to ECS
+      # 7. Deploy to ECS
       - name: Deploy to ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
