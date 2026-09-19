@@ -4,7 +4,7 @@ const app = express();
 app.get("/", (req, res) => {
   res.json({
     message:
-      "Hay, I am running on AWS ECS Fargate with Docker image from AWS ECR",
+      "Hay, I am running on AWS ECS Fargate with Docker image from AWS ECR Updated!!!",
   });
 });
 
