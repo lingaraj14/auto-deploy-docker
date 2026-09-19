@@ -23,6 +23,8 @@ FROM node:alpine AS runner
 
 WORKDIR /app
 
+ENV PORT=3000
+
 # Copy only the necessary files from the builder stage
 COPY --from=builder /build/dist ./dist
 COPY --from=builder /build/package*.json ./

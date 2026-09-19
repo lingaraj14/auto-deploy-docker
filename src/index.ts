@@ -1,18 +1,15 @@
 import express from "express";
-import dotenv from "dotenv";
-dotenv.config();
-
 const app = express();
-const PORT = process.env.PORT ?? 5000;
 
 app.get("/", (req, res) => {
-  res.send(
-    "Hay, I am running on AWS ECS Fargate with Docker image from AWS ECR",
-  );
+  res.json({
+    message:
+      "Hay, I am running on AWS ECS Fargate with Docker image from AWS ECR",
+  });
 });
 
 app.get("/health", (req, res) => {
-  res.send("I am healthy");
+  res.status(200).json({ status: "ok", message: "Server is healthy" });
 });
 
-app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+export default app;
